@@ -36,5 +36,5 @@ def check_for_virus(object, field_name):
                 })
     elif file.status >= FILE_VIRUS_NOT_FOUND:
         file_url = getattr(object, 'get_%s_url'%field_name, None)
-        return mark_safe('<a href="%s">%s</a>'%(file_url, text))
+        return mark_safe('<a href="%s">%s</a>'%(file_url, app_settings.ANTIVIRUS_MSG_DOWNLOAD))
 
