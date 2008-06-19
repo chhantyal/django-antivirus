@@ -11,7 +11,7 @@ from apps.antivirus import app_settings
 register = template.Library()
 
 @register.filter_function
-def check_for_virus(object, field_name, text='Click to download'):
+def check_for_virus(object, field_name):
     file_path = getattr(object, 'get_%s_filename'%field_name, None)()
     url = getattr(object, 'get_%s_url'%field_name, None)()
 
