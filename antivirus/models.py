@@ -35,7 +35,7 @@ class FileManager(models.Manager):
         return file
 
 class File(models.Model):
-    path = models.FilePathField(path=app_settings.ANTIVIRUS_FILES_PATH, unique=True, max_length=250)
+    path = models.CharField(max_length=250, unique=True)
     status = models.SmallIntegerField(default=0, blank=True, choices=FILE_STATUS_CHOICES)
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
