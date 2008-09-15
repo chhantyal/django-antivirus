@@ -1,5 +1,7 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('apps.antivirus.views',
-    (r'^files/(?P<file_id>\d+)/check/$', 'file_check'),
+from views import file_check
+
+urlpatterns = patterns('',
+    (r'^files/(?P<file_id>\d+)/check/$', file_check, {}, 'antivirus_file_check'),
 )
