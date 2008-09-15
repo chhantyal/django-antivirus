@@ -4,9 +4,9 @@ from django import template
 from django.utils.translation import ugettext as _
 from django.utils.safestring import mark_safe
 
-from apps.antivirus.models import File, FILE_STANDING, FILE_VIRUS_NOT_FOUND,\
+from antivirus.models import File, FILE_STANDING, FILE_VIRUS_NOT_FOUND,\
         FILE_VIRUS_FOUND, FILE_NOT_EXISTS
-from apps.antivirus import app_settings
+from antivirus import app_settings
 
 register = template.Library()
 
