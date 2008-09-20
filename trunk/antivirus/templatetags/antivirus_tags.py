@@ -12,6 +12,12 @@ register = template.Library()
 
 @register.filter_function
 def check_for_virus(object, field_name):
+    """Uses this template filter to print the HTML for download the file just after check for virus. If a virus be found, it won't show the link to download.
+    
+    Example:
+        
+    {{ object|check_for_virus:"file_field_name" }}
+    """
     file_field = getattr(object, field_name)
     file_path = file_field.path
     url = file_field.url

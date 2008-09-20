@@ -7,6 +7,7 @@ from django.contrib.contenttypes.generic import GenericForeignKey
 from django.utils.translation import ugettext_lazy as _
 
 import app_settings
+from utils import path_to_object
 
 FILE_STANDING = 0
 FILE_VIRUS_NOT_FOUND = 1
@@ -21,7 +22,9 @@ FILE_STATUS_CHOICES = (
 )
 
 class FileManager(models.Manager):
+    """Default manager for File model class"""
     def get_or_create_for_object(self, obj, file_path, url=None):
+        """Create an file reference for an specific object and file field"""
         ctype = ContentType.objects.get_for_model(obj)
         file, new = self.get_or_create(
                 path = file_path,
@@ -35,6 +38,7 @@ class FileManager(models.Manager):
         return file
 
 class File(models.Model):
+    """Model class to storage file checked (or to be checked) by antivirus"""
     path = models.CharField(max_length=250, unique=True)
     status = models.SmallIntegerField(default=0, blank=True, choices=FILE_STATUS_CHOICES)
     content_type = models.ForeignKey(ContentType, null=True, blank=True)
@@ -51,26 +55,15 @@ class File(models.Model):
     class Meta:
         pass
 
-    def scanfile(self):
+    def scanfile(self, backend_path=app_settings.ANTIVIRUS_BACKEND):
+        """Uses the antivirus backend to scan the file for virus"""
         if not self.check_file_exists():
             return False
 
-        if app_settings.ANTIVIRUS_USE_CLAMAV_DEAMON:
-            import pyclamd
-            if app_settings.ANTIVIRUS_CLAMD_USE_UNIX:
-                pyclamd.init_unix_socket(
-                        app_settings.ANTIVIRUS_CLAMD_UNIX_PATH,
-                        )
-            else:
-                pyclamd.init_network_socket(
-                        app_settings.ANTIVIRUS_CLAMD_HOSTNAME,
-                        app_settings.ANTIVIRUS_CLAMD_PORT,
-                        )
-            found = pyclamd.scan_file(self.path)
-            virus = found and '\n'.join(found.values()) or ''
-        else:
-            import pyclamav
-            found, virus = pyclamav.scanfile(self.path)
+        backend_class = path_to_object(backend_path)
+        backend = backend_class()
+
+        found, virus = backend.scanfile(self.path)
 
         if found:
             self.viruses_found = virus
@@ -84,6 +77,7 @@ class File(models.Model):
         return found
 
     def check_file_exists(self):
+        """Checks if a file exists, save this information and returns it"""
         if self.status != FILE_NOT_EXISTS and not os.path.isfile(self.path):
             self.status = FILE_NOT_EXISTS
             self.save()
