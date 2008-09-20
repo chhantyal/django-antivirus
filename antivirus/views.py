@@ -6,6 +6,7 @@ from models import File, FILE_STANDING, FILE_VIRUS_NOT_FOUND,\
 import app_settings
 
 def file_check(request, file_id):
+    """Checks a file and returns HTML respective to if it found virus or not"""
     text = request.GET.get('text', _('Click to Download'))
 
     try:
