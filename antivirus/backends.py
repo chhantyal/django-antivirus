@@ -18,7 +18,7 @@ class ClamAV(BaseAntivirusBackend):
                         app_settings.ANTIVIRUS_CLAMD_HOSTNAME,
                         app_settings.ANTIVIRUS_CLAMD_PORT,
                         )
-            found = pyclamd.scan_file(self.path)
+            found = pyclamd.scan_file(file_path)
             virus = found and '\n'.join(found.values()) or ''
         else:
             import pyclamav

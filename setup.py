@@ -1,4 +1,5 @@
 # django-antivirus setup
+# First version of this file done by Guilherme Semente
 
 from distutils.core import setup
 from antivirus import get_version
